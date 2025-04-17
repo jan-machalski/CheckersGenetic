@@ -132,6 +132,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MonteCarloPlayer.cpp" />
     <ClCompile Include="MoveGenerator.cpp" />
@@ -141,6 +143,8 @@
     <ClInclude Include="BoardMap.hpp" />
     <ClInclude Include="CheckersQueue.hpp" />
     <ClInclude Include="CheckersVector.hpp" />
+    <ClInclude Include="Game.hpp" />
+    <ClInclude Include="HumanPlayer.hpp" />
     <ClInclude Include="Judge.hpp" />
     <ClInclude Include="MonteCarloPlayer.hpp" />
     <ClInclude Include="MoveDirections.hpp" />

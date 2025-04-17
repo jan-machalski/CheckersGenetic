@@ -421,7 +421,7 @@ CheckersVector<Move> MoveGenerator::GenerateWholeCapturesWithNotation(uint32_t o
 				uint32_t newSquare = capturedPiece & PLUS_5_MOVE_AVAILABLE ? capturedPiece << 5 : capturedPiece << 4;
 				if (capturedPiece & capturableEnemyPieces && newSquare & freeSquares)
 				{
-					captureQueue.push({ (currentCapture & ourPieces) | (enemyPieces & currentCapture) | capturedPiece | newSquare , currentNotation + boardMap.at(newSquare)});
+					captureQueue.push({ (currentCapture & ourPieces) | (enemyPieces & currentCapture) | capturedPiece | newSquare , currentNotation + ":" + boardMap.at(newSquare)});
 					furtherCaptures = true;
 				}
 			}
@@ -433,7 +433,7 @@ CheckersVector<Move> MoveGenerator::GenerateWholeCapturesWithNotation(uint32_t o
 				uint32_t newSquare = capturedPiece & PLUS_3_MOVE_AVAILABLE ? capturedPiece << 3 : capturedPiece << 4;
 				if (capturedPiece & capturableEnemyPieces && newSquare & freeSquares)
 				{
-					captureQueue.push({ (currentCapture & ourPieces) | (enemyPieces & currentCapture) | capturedPiece | newSquare , currentNotation + boardMap.at(newSquare) });
+					captureQueue.push({ (currentCapture & ourPieces) | (enemyPieces & currentCapture) | capturedPiece | newSquare , currentNotation + ":" + boardMap.at(newSquare) });
 					furtherCaptures = true;
 				}
 			}
@@ -445,7 +445,7 @@ CheckersVector<Move> MoveGenerator::GenerateWholeCapturesWithNotation(uint32_t o
 				uint32_t newSquare = capturedPiece & MINUS_3_MOVE_AVAILABLE ? capturedPiece >> 3 : capturedPiece >> 4;
 				if (capturedPiece & capturableEnemyPieces && newSquare & freeSquares)
 				{
-					captureQueue.push({ (currentCapture & ourPieces) | (enemyPieces & currentCapture) | capturedPiece | newSquare , currentNotation + boardMap.at(newSquare) });
+					captureQueue.push({ (currentCapture & ourPieces) | (enemyPieces & currentCapture) | capturedPiece | newSquare , currentNotation + ":" + boardMap.at(newSquare) });
 					furtherCaptures = true;
 				}
 			}
@@ -457,7 +457,7 @@ CheckersVector<Move> MoveGenerator::GenerateWholeCapturesWithNotation(uint32_t o
 				uint32_t newSquare = capturedPiece & MINUS_5_MOVE_AVAILABLE ? capturedPiece >> 5 : capturedPiece >> 4;
 				if (capturedPiece & capturableEnemyPieces && newSquare & freeSquares)
 				{
-					captureQueue.push({ (currentCapture & ourPieces) | (enemyPieces & currentCapture) | capturedPiece | newSquare , currentNotation + boardMap.at(newSquare) });
+					captureQueue.push({ (currentCapture & ourPieces) | (enemyPieces & currentCapture) | capturedPiece | newSquare , currentNotation + ":" + boardMap.at(newSquare)});
 					furtherCaptures = true;
 				}
 			}

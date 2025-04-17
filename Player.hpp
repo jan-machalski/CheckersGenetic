@@ -1,6 +1,8 @@
 #pragma once
 #include "Board.h"
 
+//#define PRINT_EVALUATIONS
+
 class Player 
 {
 public:

@@ -134,12 +134,16 @@ void MonteCarloPlayer::PerformMC()
 uint32_t MonteCarloPlayer::MakeMove()
 {
 	PerformMC();
-	printf("Games Played: %llu\n", root->gamesPlayed);
+#ifdef PRINT_EVALUATIONS
+		printf("Games Played: %llu\n", root->gamesPlayed);
+#endif
 	if (root->children.empty()) //root should never be nullptr when player is to move but it can have no children
 		return 0;
 
 	double evaluation = (double)root->totalPoints / root->gamesPlayed - 1;
+#ifdef PRINT_EVALUATIONS
 	printf("Evaluation: %.3f (value between -1 and 1, more = better situation)\n", evaluation);
+#endif
 
 	TreeNode* bestChild = nullptr;
 	uint64_t maxSimulations = 0;
