@@ -7,7 +7,11 @@ using namespace std;
 
 int main()
 {
-	MoveGenerator::Init();
+	MinimaxPlayer testPlayer(true, 500,4);
+	uint32_t move = testPlayer.MakeMove();
+
+	cout << "Best move: " << move << endl;
+	/*MoveGenerator::Init();
 
 	MonteCarloPlayer whitePlayer(true, 300);
 	MonteCarloPlayer blackPlayer(false, 300);
@@ -32,7 +36,7 @@ int main()
 	for (const auto& move : moves)
 	{
 		cout << move << endl;
-	}
+	}*/
 	return 0;
 }
 

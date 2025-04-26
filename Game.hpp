@@ -1,5 +1,6 @@
 #include "MonteCarloPlayer.hpp"
 #include "HumanPlayer.hpp"
+#include "MinimaxPlayer.hpp"
 
 #include <future>
 #include <string>

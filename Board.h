@@ -29,11 +29,11 @@ public:
 	Board(bool isWhite) : whitePieces(WHITE_PIECES_INIT), blackPieces(BLACK_PIECES_INIT), promotedPieces(PROMOTED_PIECES_INIT), isWhiteTurn(isWhite) {}
 
 
-
+	bool isCapture(uint32_t moveMask) const;
 	CheckersVector<uint32_t> GenerateMoves() const;
 	CheckersVector<Move> GenerateMovesWithNotation() const;
 
-	Board MakeMove(uint32_t moveMaks);
+	Board MakeMove(uint32_t moveMaks) const;
 	void ApplyMove(uint32_t moveMask);
 
 	void Print();

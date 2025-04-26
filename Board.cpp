@@ -11,12 +11,18 @@ CheckersVector<Move> Board::GenerateMovesWithNotation() const
 	return MoveGenerator::GenerateMovesWithNotation(whitePieces, blackPieces, promotedPieces, isWhiteTurn);
 }
 
+bool Board::isCapture(uint32_t moveMask) const
+{
+	uint32_t opponentPieces = isWhiteTurn ? blackPieces : whitePieces;
+	return (moveMask & opponentPieces) != 0;
+}
+
 void Board::Print()
 {
 	printBoard(whitePieces, blackPieces, promotedPieces, true);
 }
 
-Board Board::MakeMove(uint32_t moveMask) //return copy of the board after making move
+Board Board::MakeMove(uint32_t moveMask) const //return copy of the board after making move
 {
 	Board newBoard = *this;
 	newBoard.ApplyMove(moveMask);

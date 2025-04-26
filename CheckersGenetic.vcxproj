@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -132,24 +132,31 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="EvaluationWeights.hpp" />
+    <ClCompile Include="Evaluator.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MinimaxPlayer.cpp" />
     <ClCompile Include="MonteCarloPlayer.cpp" />
     <ClCompile Include="MoveGenerator.cpp" />
+    <ClCompile Include="TranspositionTable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
     <ClInclude Include="BoardMap.hpp" />
     <ClInclude Include="CheckersQueue.hpp" />
     <ClInclude Include="CheckersVector.hpp" />
+    <ClInclude Include="Evaluator.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="HumanPlayer.hpp" />
     <ClInclude Include="Judge.hpp" />
+    <ClInclude Include="MinimaxPlayer.hpp" />
     <ClInclude Include="MonteCarloPlayer.hpp" />
     <ClInclude Include="MoveDirections.hpp" />
     <ClInclude Include="MoveGenerator.h" />
     <ClInclude Include="Player.hpp" />
+    <ClInclude Include="TranspositionTable.hpp" />
     <ClInclude Include="Utils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
