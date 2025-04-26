@@ -36,7 +36,7 @@ void Game::Play()
 		gameBoard.ApplyMove(newMove);
 		blackPlayer->InputMove(newMove);
 
-		printf("White player made move: %s\n", moveMade->notation);
+        printf("White player made move: %s\n", moveMade->notation.c_str());
 		printBoard(gameBoard.whitePieces, gameBoard.blackPieces, gameBoard.promotedPieces, true);
 		if (gameBoard.nonAdvancingMoveCount >= MAX_NON_ADVANCING_MOVE_COUNT)
 		{
@@ -62,7 +62,7 @@ void Game::Play()
 		gameBoard.ApplyMove(newMove);
 		whitePlayer->InputMove(newMove);
 
-		printf("Black player made move: %s\n", moveMade->notation);
+		printf("Black player made move: %s\n", moveMade->notation.c_str());
 	}
 }
 

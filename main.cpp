@@ -7,16 +7,13 @@ using namespace std;
 
 int main()
 {
-	MinimaxPlayer testPlayer(true, 500,4);
-	uint32_t move = testPlayer.MakeMove();
+	MoveGenerator::Init();
+	MinimaxPlayer whitePlayer(true, 200,20);
+	MinimaxPlayer blackPlayer(false, 200, 20);
 
-	cout << "Best move: " << move << endl;
-	/*MoveGenerator::Init();
-
-	MonteCarloPlayer whitePlayer(true, 300);
-	MonteCarloPlayer blackPlayer(false, 300);
 	Game game(&whitePlayer, &blackPlayer);
-	auto future = game.SimulateAsync();
+	game.Play();
+	/*auto future = game.SimulateAsync();
 
 	auto [result, moves] = future.get();
 

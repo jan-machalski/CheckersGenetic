@@ -19,13 +19,12 @@ void TranspositionTable::store(uint64_t zobristHash, int depth, float value, Nod
     size_t index = zobristHash % size;
     Entry& entry = table[index];
 
-    if (entry.age < currentAge || entry.depth <= depth) {
+    if (entry.depth <= depth) {
         entry.zobristHash = zobristHash;
         entry.depth = depth;
         entry.value = value;
         entry.type = type;
         entry.bestMove = bestMove;
-        entry.age = currentAge;
     }
 }
 
@@ -45,15 +44,6 @@ bool TranspositionTable::probe(uint64_t zobristHash, int requiredDepth, int& out
 
 void TranspositionTable::clear() {
     std::fill(table.begin(), table.end(), Entry{});
-    currentAge = 0;
-}
-
-void TranspositionTable::softClear() {
-    incrementAge();
-}
-
-void TranspositionTable::incrementAge() {
-    currentAge++;
 }
 
 void TranspositionTable::initZobristKeys() {

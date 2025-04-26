@@ -2,6 +2,8 @@
 #include "Evaluator.hpp"
 #include "Player.hpp"
 
+#define BIG_NUMBER 999999.0
+
 class MinimaxPlayer : public Player
 {
 private:
@@ -14,7 +16,7 @@ private:
 
 	uint32_t previousBestMove = 0;
 
-	float alphaBeta(const Board& board, int depth, float alpha, float beta, bool maximizingPlayer, bool isCapture, uint32_t& bestMove);
+	float alphaBeta(const Board& board, int depth, float alpha, float beta, bool maximizingPlayer, uint32_t& bestMove);
 	void placeBestMove(CheckersVector<uint32_t>& moves);
 
     uint32_t iterativeDeepening();

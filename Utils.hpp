@@ -66,3 +66,25 @@ inline void printBoard(uint32_t playerPieces, uint32_t opponentPieces, uint32_t 
 
 	printf("\t%s\n\n", columns);
 }
+inline void printOcupiedSquares(uint32_t whitePieces, uint32_t blackPieces, uint32_t promotedPieces) 
+{
+	printf("White pieces: ");
+	for (int i = 0; i < 32; i++) {
+		if (whitePieces & (1 << i)) {
+			printf("%d ", i);
+		}
+	}
+	printf("\nBlack pieces: ");
+	for (int i = 0; i < 32; i++) {
+		if (blackPieces & (1 << i)) {
+			printf("%d ", i);
+		}
+	}
+	printf("\nPromoted pieces: ");
+	for (int i = 0; i < 32; i++) {
+		if (promotedPieces & (1 << i)) {
+			printf("%d ", i);
+		}
+	}
+	printf("\n");
+}
