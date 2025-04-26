@@ -16,7 +16,7 @@ private:
 
 	uint32_t previousBestMove = 0;
 
-	float alphaBeta(const Board& board, int depth, float alpha, float beta, bool maximizingPlayer, uint32_t& bestMove);
+	float alphaBeta(const Board& board, int depth, float alpha, float beta, bool maximizingPlayer, bool calledRecursively, uint32_t& bestMove);
 	void placeBestMove(CheckersVector<uint32_t>& moves);
 
     uint32_t iterativeDeepening();

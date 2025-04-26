@@ -8,8 +8,9 @@ using namespace std;
 int main()
 {
 	MoveGenerator::Init();
-	MinimaxPlayer whitePlayer(true, 200,20);
-	MinimaxPlayer blackPlayer(false, 200, 20);
+	MinimaxPlayer whitePlayer(true, 200,30);
+	EvaluationWeights weights(1.0, 1.0);
+	MinimaxPlayer blackPlayer(false, 200,weights, 30);
 
 	Game game(&whitePlayer, &blackPlayer);
 	game.Play();

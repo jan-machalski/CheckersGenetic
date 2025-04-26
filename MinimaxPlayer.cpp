@@ -3,7 +3,7 @@
 #include <chrono>
 #include "Utils.hpp"
 
-#define PRINT_EVALUATIONS
+#define PRINT_EVALS
 
 uint32_t MinimaxPlayer::MakeMove()
 {
@@ -56,7 +56,7 @@ uint32_t MinimaxPlayer::iterativeDeepening()
 			bool moveIsCapture = board.isCapture(move);
 		
 			uint32_t childBestMove = 0;
-			float value = -alphaBeta(tmpBoard, depth - 1, -beta, -alpha, false, childBestMove);
+			float value = -alphaBeta(tmpBoard, depth - 1, -beta, -alpha, false, false, childBestMove);
 		
 			if (value > bestValue)
 			{
@@ -70,8 +70,11 @@ uint32_t MinimaxPlayer::iterativeDeepening()
 			bestMove = currentBestMove;
 			previousBestMove = bestMove;
 		}
+#ifdef PRINT_EVALS
+		printf("Depth %d, best move: %ld, evaluation: %f\n", depth, bestMove, bestValue);
+#endif // PRINT_EVALS
 
-		printf("Depth %d, best move: %ld, evaluation: %f\n",depth,bestMove,bestValue);
+		
 
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count();
@@ -83,7 +86,7 @@ uint32_t MinimaxPlayer::iterativeDeepening()
 
 }
 
-float MinimaxPlayer::alphaBeta(const Board& board, int depth, float alpha, float beta, bool maximizingPlayer, uint32_t& bestMove)
+float MinimaxPlayer::alphaBeta(const Board& board, int depth, float alpha, float beta, bool maximizingPlayer,bool calledRecursively, uint32_t& bestMove)
 {
 	uint64_t zobristHash = TranspositionTable::computeZobristHash(board);
 
@@ -116,7 +119,8 @@ float MinimaxPlayer::alphaBeta(const Board& board, int depth, float alpha, float
 		return evaluation;
 	}
 
-	placeBestMove(moves);
+	if(!calledRecursively)
+		placeBestMove(moves);
 
 	float originalAlpha = alpha;
 	TranspositionTable::NodeType nodeType = TranspositionTable::NodeType::EXACT;
@@ -136,7 +140,7 @@ float MinimaxPlayer::alphaBeta(const Board& board, int depth, float alpha, float
 			nextDepth = 0;
 
 		uint32_t childBestMove = 0;
-		float value = -alphaBeta(tmpBoard, nextDepth, -beta, -alpha, false, childBestMove);
+		float value = -alphaBeta(tmpBoard, nextDepth, -beta, -alpha, false,true, childBestMove);
 
 		if (value > bestValue)
 		{
