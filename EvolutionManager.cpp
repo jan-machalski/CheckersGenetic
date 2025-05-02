@@ -5,7 +5,6 @@
 #include <mutex>
 #include <random>
 
-
 using namespace std;
 
 EvolutionManager::EvolutionManager() {

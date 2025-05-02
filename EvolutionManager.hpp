@@ -17,7 +17,7 @@ private:
     std::vector<Bot> population;
     Bot previousBest;
     std::mutex scoreMutex;
-
+     
     // Initialization
     void Initialize();
 

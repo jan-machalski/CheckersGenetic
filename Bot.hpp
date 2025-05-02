@@ -14,5 +14,5 @@ struct Bot {
         : weights(weights) {
     }
 
-    MinimaxPlayer CreatePlayer(bool isWhite, int depth = 200, int timeLimit = 30) const;
+    MinimaxPlayer CreatePlayer(bool isWhite, int depth = 200, int timeLimit = 30) const; 
 };

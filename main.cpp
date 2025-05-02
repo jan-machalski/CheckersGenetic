@@ -7,6 +7,7 @@
 
 using namespace std;
 int main() {
+
     MoveGenerator::Init();
     EvolutionManager evolution;
     evolution.Run();
