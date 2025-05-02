@@ -1,7 +1,6 @@
 ﻿#include <iostream>
 #include <vector>
 #include "Bot.hpp"
-#include "Evolution.hpp"
 #include "EvolutionConfig.hpp"
 #include "Game.hpp"
 #include "EvolutionManager.hpp"

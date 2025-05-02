@@ -1,17 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Pliki źródłowe">
+    <Filter Include="src">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Pliki nagłówkowe">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Board">
+      <UniqueIdentifier>{7e18b565-30b3-4fbb-8ed0-4ba9e914ec23}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Pliki zasobów">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Evaluation">
+      <UniqueIdentifier>{d3805877-2b4c-4974-9b44-2d01132f905c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{e79a8a5f-b459-437a-9696-58797e14ebe2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{acb67ad4-6ee0-47cd-9cda-1690d6275f8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Players">
+      <UniqueIdentifier>{ad4fd668-b0ac-473c-9af3-cc12ae125db2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Pliki nagłówkowe\evolution &amp; tournament">
       <UniqueIdentifier>{e6bd3291-1afb-48f5-84ff-81cb18693775}</UniqueIdentifier>
@@ -19,34 +26,31 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Pliki źródłowe</Filter>
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="Board.cpp">
-      <Filter>Pliki źródłowe</Filter>
+    <ClCompile Include="Board\Board.cpp">
+      <Filter>Board</Filter>
     </ClCompile>
-    <ClCompile Include="MoveGenerator.cpp">
-      <Filter>Pliki źródłowe</Filter>
+    <ClCompile Include="Board\MoveGenerator.cpp">
+      <Filter>Board</Filter>
     </ClCompile>
-    <ClCompile Include="MonteCarloPlayer.cpp">
-      <Filter>Pliki źródłowe</Filter>
+    <ClCompile Include="Evaluation\Evaluator.cpp">
+      <Filter>Evaluation</Filter>
     </ClCompile>
-    <ClCompile Include="HumanPlayer.cpp">
-      <Filter>Pliki źródłowe</Filter>
+    <ClCompile Include="Evaluation\TranspositionTable.cpp">
+      <Filter>Evaluation</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Pliki źródłowe</Filter>
+    <ClCompile Include="Game\Game.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="EvaluationWeights.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClCompile Include="Players\HumanPlayer.cpp">
+      <Filter>Players</Filter>
     </ClCompile>
-    <ClCompile Include="Evaluator.cpp">
-      <Filter>Pliki źródłowe</Filter>
+    <ClCompile Include="Players\MinimaxPlayer.cpp">
+      <Filter>Players</Filter>
     </ClCompile>
-    <ClCompile Include="TranspositionTable.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
-    <ClCompile Include="MinimaxPlayer.cpp">
-      <Filter>Pliki źródłowe</Filter>
+    <ClCompile Include="Players\MonteCarloPlayer.cpp">
+      <Filter>Players</Filter>
     </ClCompile>
     <ClCompile Include="Evolution.cpp">
       <Filter>Pliki źródłowe</Filter>
@@ -59,50 +63,56 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Board.h">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Board\Board.h">
+      <Filter>Board</Filter>
     </ClInclude>
-    <ClInclude Include="MoveGenerator.h">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Board\MoveDirections.hpp">
+      <Filter>Board</Filter>
     </ClInclude>
-    <ClInclude Include="CheckersVector.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Board\MoveGenerator.h">
+      <Filter>Board</Filter>
     </ClInclude>
-    <ClInclude Include="CheckersQueue.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Board\QueenMoveDirections.hpp">
+      <Filter>Board</Filter>
     </ClInclude>
-    <ClInclude Include="BoardMap.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Evaluation\EvaluationWeights.hpp">
+      <Filter>Evaluation</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Evaluation\Evaluator.hpp">
+      <Filter>Evaluation</Filter>
     </ClInclude>
-    <ClInclude Include="MoveDirections.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Evaluation\TranspositionTable.hpp">
+      <Filter>Evaluation</Filter>
     </ClInclude>
-    <ClInclude Include="Judge.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Game\Game.hpp">
+      <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Player.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Players\HumanPlayer.hpp">
+      <Filter>Players</Filter>
     </ClInclude>
-    <ClInclude Include="MonteCarloPlayer.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Players\MinimaxPlayer.hpp">
+      <Filter>Players</Filter>
     </ClInclude>
-    <ClInclude Include="HumanPlayer.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Players\MonteCarloPlayer.hpp">
+      <Filter>Players</Filter>
     </ClInclude>
-    <ClInclude Include="Game.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Players\Player.hpp">
+      <Filter>Players</Filter>
     </ClInclude>
-    <ClInclude Include="Evaluator.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Utils\BoardMap.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="MinimaxPlayer.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Utils\CheckersQueue.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="TranspositionTable.hpp">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="Utils\CheckersVector.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Judge.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Utils.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Evolution.hpp">
       <Filter>Pliki nagłówkowe</Filter>
