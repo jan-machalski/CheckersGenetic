@@ -11,7 +11,7 @@
 class EvolutionManager {
 public:
     EvolutionManager();
-    void Run();  // Main loop to run evolution across generations
+    void Run();  
 
 private:
     std::vector<Bot> population;
