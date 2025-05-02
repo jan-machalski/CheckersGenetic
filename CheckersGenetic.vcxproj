@@ -132,8 +132,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Bot.cpp" />
     <ClCompile Include="EvaluationWeights.hpp" />
     <ClCompile Include="Evaluator.cpp" />
+    <ClCompile Include="EvolutionManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -145,9 +147,12 @@
   <ItemGroup>
     <ClInclude Include="Board.h" />
     <ClInclude Include="BoardMap.hpp" />
+    <ClInclude Include="Bot.hpp" />
     <ClInclude Include="CheckersQueue.hpp" />
     <ClInclude Include="CheckersVector.hpp" />
     <ClInclude Include="Evaluator.hpp" />
+    <ClInclude Include="EvolutionConfig.hpp" />
+    <ClInclude Include="EvolutionManager.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="HumanPlayer.hpp" />
     <ClInclude Include="Judge.hpp" />
