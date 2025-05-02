@@ -10,7 +10,7 @@
 
 class EvolutionManager {
 public:
-    EvolutionManager();
+    EvolutionManager(bool resume);
     void Run();  
 
 private:
@@ -19,7 +19,7 @@ private:
     std::mutex scoreMutex;
      
     // Initialization
-    void Initialize();
+    void Initialize(bool resume);
 
     // Tournament
     void RunTournament();
@@ -34,4 +34,7 @@ private:
     // Evaluation helpers
     int MatchBots(Player* white, Player* black);
     void EvaluateAgainstMonteCarlo(const Bot& bestBot, int generation);
+    void SavePopulationToFile(const std::string& filename);
+    bool LoadPopulationFromFile(const std::string& filename);
+
 };

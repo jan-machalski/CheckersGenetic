@@ -3,5 +3,5 @@
 
 
 MinimaxPlayer Bot::CreatePlayer(bool isWhite, int depth, int timeLimit) const {
-    return MinimaxPlayer(isWhite, depth, weights, timeLimit);
+    return MinimaxPlayer(isWhite, timeLimit, weights, depth);
 }

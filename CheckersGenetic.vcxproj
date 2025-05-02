@@ -154,6 +154,7 @@
     <ClInclude Include="Evaluation\Evaluator.hpp" />
     <ClInclude Include="Evaluation\TranspositionTable.hpp" />
     <ClInclude Include="Game\Game.hpp" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="Players\HumanPlayer.hpp" />
     <ClInclude Include="Players\MinimaxPlayer.hpp" />
     <ClInclude Include="Players\MonteCarloPlayer.hpp" />
