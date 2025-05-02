@@ -107,6 +107,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Utils;$(ProjectDir)Players;$(ProjectDir)Evaluation;$(ProjectDir)Board;$(ProjectDir)Players;$(ProjectDir)Utils;$(ProjectDir)Game;$(ProjectDir)Evaluation;$(ProjectDir)Board</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,6 +123,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Utils;$(ProjectDir)Players;$(ProjectDir)Evaluation;$(ProjectDir)Board;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,33 +133,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Board.cpp" />
-    <ClCompile Include="EvaluationWeights.hpp" />
-    <ClCompile Include="Evaluator.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="HumanPlayer.cpp" />
+    <ClCompile Include="Board\Board.cpp" />
+    <ClCompile Include="Board\MoveGenerator.cpp" />
+    <ClCompile Include="Evaluation\Evaluator.cpp" />
+    <ClCompile Include="Evaluation\TranspositionTable.cpp" />
+    <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MinimaxPlayer.cpp" />
-    <ClCompile Include="MonteCarloPlayer.cpp" />
-    <ClCompile Include="MoveGenerator.cpp" />
-    <ClCompile Include="TranspositionTable.cpp" />
+    <ClCompile Include="Players\HumanPlayer.cpp" />
+    <ClCompile Include="Players\MinimaxPlayer.cpp" />
+    <ClCompile Include="Players\MonteCarloPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Board.h" />
-    <ClInclude Include="BoardMap.hpp" />
-    <ClInclude Include="CheckersQueue.hpp" />
-    <ClInclude Include="CheckersVector.hpp" />
-    <ClInclude Include="Evaluator.hpp" />
-    <ClInclude Include="Game.hpp" />
-    <ClInclude Include="HumanPlayer.hpp" />
-    <ClInclude Include="Judge.hpp" />
-    <ClInclude Include="MinimaxPlayer.hpp" />
-    <ClInclude Include="MonteCarloPlayer.hpp" />
-    <ClInclude Include="MoveDirections.hpp" />
-    <ClInclude Include="MoveGenerator.h" />
-    <ClInclude Include="Player.hpp" />
-    <ClInclude Include="TranspositionTable.hpp" />
-    <ClInclude Include="Utils.hpp" />
+    <ClInclude Include="Board\Board.h" />
+    <ClInclude Include="Board\MoveDirections.hpp" />
+    <ClInclude Include="Board\MoveGenerator.h" />
+    <ClInclude Include="Board\QueenMoveDirections.hpp" />
+    <ClInclude Include="Evaluation\EvaluationWeights.hpp" />
+    <ClInclude Include="Evaluation\Evaluator.hpp" />
+    <ClInclude Include="Evaluation\TranspositionTable.hpp" />
+    <ClInclude Include="Game\Game.hpp" />
+    <ClInclude Include="Players\HumanPlayer.hpp" />
+    <ClInclude Include="Players\MinimaxPlayer.hpp" />
+    <ClInclude Include="Players\MonteCarloPlayer.hpp" />
+    <ClInclude Include="Players\Player.hpp" />
+    <ClInclude Include="Utils\BoardMap.hpp" />
+    <ClInclude Include="Utils\CheckersQueue.hpp" />
+    <ClInclude Include="Utils\CheckersVector.hpp" />
+    <ClInclude Include="Utils\Judge.hpp" />
+    <ClInclude Include="Utils\Utils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
