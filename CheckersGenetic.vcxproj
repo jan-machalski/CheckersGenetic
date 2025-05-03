@@ -137,9 +137,9 @@
     <ClCompile Include="Board\MoveGenerator.cpp" />
     <ClCompile Include="Evaluation\Evaluator.cpp" />
     <ClCompile Include="Evaluation\TranspositionTable.cpp" />
+    <ClCompile Include="Evolution\Bot.cpp" />
+    <ClCompile Include="Evolution\EvolutionManager.cpp" />
     <ClCompile Include="Game\Game.cpp" />
-    <ClCompile Include="EvolutionManager.cpp" />
-    <ClCompile Include="Bot.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Players\HumanPlayer.cpp" />
     <ClCompile Include="Players\MinimaxPlayer.cpp" />
@@ -154,7 +154,6 @@
     <ClInclude Include="Evaluation\Evaluator.hpp" />
     <ClInclude Include="Evaluation\TranspositionTable.hpp" />
     <ClInclude Include="Game\Game.hpp" />
-    <ClInclude Include="json.hpp" />
     <ClInclude Include="Players\HumanPlayer.hpp" />
     <ClInclude Include="Players\MinimaxPlayer.hpp" />
     <ClInclude Include="Players\MonteCarloPlayer.hpp" />
@@ -162,6 +161,7 @@
     <ClInclude Include="Utils\BoardMap.hpp" />
     <ClInclude Include="Utils\CheckersQueue.hpp" />
     <ClInclude Include="Utils\CheckersVector.hpp" />
+    <ClInclude Include="Utils\json.hpp" />
     <ClInclude Include="Utils\Judge.hpp" />
     <ClInclude Include="Utils\Utils.hpp" />
     <ClInclude Include="EvolutionConfig.hpp" />
