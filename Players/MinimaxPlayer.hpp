@@ -1,3 +1,4 @@
+#pragma once
 #include "TranspositionTable.hpp"
 #include "Evaluator.hpp"
 #include "Player.hpp"

@@ -20,6 +20,9 @@
     <Filter Include="Players">
       <UniqueIdentifier>{ad4fd668-b0ac-473c-9af3-cc12ae125db2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pliki nagłówkowe\evolution &amp; tournament">
+      <UniqueIdentifier>{e6bd3291-1afb-48f5-84ff-81cb18693775}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -48,6 +51,15 @@
     </ClCompile>
     <ClCompile Include="Players\MonteCarloPlayer.cpp">
       <Filter>Players</Filter>
+    </ClCompile>
+    <ClCompile Include="Evolution.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Bot.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="EvolutionManager.cpp">
+      <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +113,18 @@
     </ClInclude>
     <ClInclude Include="Utils\Utils.hpp">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Evolution.hpp">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot.hpp">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="EvolutionConfig.hpp">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="EvolutionManager.hpp">
+      <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

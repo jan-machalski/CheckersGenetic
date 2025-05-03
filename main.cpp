@@ -1,41 +1,25 @@
 ﻿#include <iostream>
-#include "Board.h"
-#include "Utils.hpp"
+#include <vector>
 #include "Game.hpp"
+#include "Evolution/EvolutionManager.hpp"
 
 using namespace std;
 
-int main()
-{
-	MoveGenerator::Init();
-	MinimaxPlayer whitePlayer(true, 200,30);
-	EvaluationWeights weights(1.0, 1.0);
-	MinimaxPlayer blackPlayer(false, 200,weights, 30);
+int main() {
+    MoveGenerator::Init();
 
-	Game game(&whitePlayer, &blackPlayer);
-	game.Play();
-	/*auto future = game.SimulateAsync();
+    char choice;
+    bool resume = false;
 
-	auto [result, moves] = future.get();
+    printf("Resume from last saved evolution state? (y/n): ");
+    std::cin >> choice;
 
-	switch (result)
-	{
-		case Game::WHITE_WINS:
-			cout << "White wins!" << endl;
-			break;
-		case Game::BLACK_WINS:
-			cout << "Black wins!" << endl;
-			break;
-		case Game::DRAW:
-			cout << "Draw!" << endl;
-			break;
-	}
+    if (choice == 'y' || choice == 'Y') {
+        resume = true;
+    }
 
-	for (const auto& move : moves)
-	{
-		cout << move << endl;
-	}*/
-	return 0;
+    EvolutionManager evolution(resume);
+    evolution.Run();
+
+    return 0;
 }
-
-

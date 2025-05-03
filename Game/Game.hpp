@@ -1,3 +1,4 @@
+#pragma once
 #include "MonteCarloPlayer.hpp"
 #include "HumanPlayer.hpp"
 #include "MinimaxPlayer.hpp"
@@ -22,7 +23,7 @@ public:
 		DRAW,
 	};
 
-	void Play();
+	Result Play();
 	std::future<std::pair<Result, std::vector<std::string>>> SimulateAsync();
 
 };

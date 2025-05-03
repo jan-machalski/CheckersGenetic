@@ -70,9 +70,9 @@ uint32_t MinimaxPlayer::iterativeDeepening()
 			bestMove = currentBestMove;
 			previousBestMove = bestMove;
 		}
-#ifdef PRINT_EVALS
-		printf("Depth %d, best move: %ld, evaluation: %f\n", depth, bestMove, bestValue);
-#endif // PRINT_EVALS
+//#ifdef PRINT_EVALS
+//		printf("Depth %d, best move: %ld, evaluation: %f\n", depth, bestMove, bestValue);
+//#endif  PRINT_EVALS
 
 		
 
