@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include <vector>
 #include "Game.hpp"
-#include "Evolution/EvolutionManager.hpp"
+#include "EvolutionManager.hpp"
 
 using namespace std;
 

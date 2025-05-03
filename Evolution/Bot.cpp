@@ -1,5 +1,5 @@
 #include "MinimaxPlayer.hpp"  
-#include "Evolution/Bot.hpp"            
+#include "Bot.hpp"            
 
 
 MinimaxPlayer Bot::CreatePlayer(bool isWhite, int depth, int timeLimit) const {
