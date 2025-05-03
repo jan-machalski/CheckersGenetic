@@ -10,4 +10,5 @@ namespace EvolutionConfig {
 
 	constexpr float MIN_WEIGHT = -1.0f;
 	constexpr float MAX_WEIGHT = 1.0f;
+	constexpr int TOURNAMENT_ROUNDS = 5;
 }

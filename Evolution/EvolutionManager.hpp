@@ -24,6 +24,8 @@ private:
     // Tournament
     void RunTournament();
     void PlayMatch(Bot& botA, Bot& botB);
+    void PlaySingleMatch(Bot& botA, Bot& botB, bool botAWhite);
+
 
     // Evolution
     void Evolve();

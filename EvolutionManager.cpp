@@ -76,6 +76,12 @@ void EvolutionManager::Run() {
             printf("Bot %d Score: %.2f\n", i, population[i].score);
         }
 
+        if (stopEvolution) {
+            SavePopulationToFile("evolution_save.txt");
+            printf("Evolution interrupted. Progress saved.\n");
+            break;
+        }
+
         Bot bestBot = *std::max_element(population.begin(), population.end(),
             [](const Bot& a, const Bot& b) { return a.score < b.score; });
 
@@ -150,21 +156,69 @@ void EvolutionManager::Initialize(bool resume) {
     }
 }
 
-
 void EvolutionManager::RunTournament() {
     std::vector<std::future<void>> futures;
-    for (size_t i = 0; i < population.size(); ++i) {
-        for (size_t j = i + 1; j < population.size(); ++j) {
-            futures.push_back(std::async(std::launch::async, [this, i, j]() {
-                PlayMatch(population[i], population[j]);
-                }));
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    size_t numBots = population.size();
+    std::vector<int> gamesPlayed(numBots, 0);
+
+    int totalGamesNeeded = EvolutionConfig::TOURNAMENT_ROUNDS * numBots / 2;
+    int gamesScheduled = 0;
+
+    while (gamesScheduled < totalGamesNeeded) {
+        size_t i = gen() % numBots;
+        size_t j;
+        do {
+            j = gen() % numBots;
+        } while (i == j);
+
+        if (gamesPlayed[i] >= EvolutionConfig::TOURNAMENT_ROUNDS ||
+            gamesPlayed[j] >= EvolutionConfig::TOURNAMENT_ROUNDS) {
+            continue; 
         }
+
+        bool iIsWhite = gen() % 2 == 0;
+        gamesPlayed[i]++;
+        gamesPlayed[j]++;
+        gamesScheduled++;
+
+        futures.push_back(std::async(std::launch::async, [this, i, j, iIsWhite]() {
+            PlaySingleMatch(population[i], population[j], iIsWhite);
+            }));
     }
 
     for (auto& fut : futures) {
         fut.get();
     }
 }
+
+
+void EvolutionManager::PlaySingleMatch(Bot& botA, Bot& botB, bool botAWhite) {
+    Player* white = botAWhite ? new MinimaxPlayer(botA.CreatePlayer(true)) : new MinimaxPlayer(botB.CreatePlayer(true));
+    Player* black = botAWhite ? new MinimaxPlayer(botB.CreatePlayer(false)) : new MinimaxPlayer(botA.CreatePlayer(false));
+
+    Game game(white, black);
+    Game::Result result = game.Play();
+
+    std::lock_guard<std::mutex> lock(scoreMutex);
+    if (result == Game::WHITE_WINS) {
+        (botAWhite ? botA : botB).score += 2;
+    }
+    else if (result == Game::BLACK_WINS) {
+        (botAWhite ? botB : botA).score += 2;
+    }
+    else {
+        botA.score += 1;
+        botB.score += 1;
+    }
+
+    delete white;
+    delete black;
+}
+
+
 
 void EvolutionManager::PlayMatch(Bot& botA, Bot& botB) {
     auto whiteA = botA.CreatePlayer(true);
