@@ -50,9 +50,9 @@ bool EvolutionManager::LoadPopulationFromFile(const std::string& filename) {
     if (!inFile.is_open()) return false;
 
     population.clear();
-    float pieces, kings, mobility, score;
-    while (inFile >> pieces >> kings >> mobility >> score) {
-        Bot bot(EvaluationWeights(pieces, kings, mobility));
+    float pieces, kings, mobility, singleSupported, doublySupported, score;
+    while (inFile >> pieces >> kings >> mobility >> singleSupported >> doublySupported >> score) {
+        Bot bot(EvaluationWeights(pieces, kings, mobility, singleSupported, doublySupported));
         bot.score = score;
         population.push_back(bot);
     }
@@ -117,10 +117,12 @@ void EvolutionManager::Run() {
 
         printf("\n=== New Bot Weights After Evolution ===\n");
         for (int i = 0; i < (int)population.size(); ++i) {
-            printf("Bot %d: Pieces = %.2f, Kings: %.2f, Mobility: %.2f\n",
+            printf("Bot %d: Pieces = %.2f, Kings: %.2f, Mobility: %.2f, Single supported = %.2f, Doubly supported = %.2f\n",
                 i, population[i].weights.weights[static_cast<std::size_t>(Heuristic::PAWN_COUNT)],
                 population[i].weights.weights[static_cast<std::size_t>(Heuristic::KING_COUNT)],
-				population[i].weights.weights[static_cast<std::size_t>(Heuristic::MOBILITY)]
+				population[i].weights.weights[static_cast<std::size_t>(Heuristic::MOBILITY)],
+                population[i].weights.weights[static_cast<std::size_t>(Heuristic::SINGLE_SUPPORTED)],
+                population[i].weights.weights[static_cast<std::size_t>(Heuristic::DOUBLY_SUPPORTED)]
                 );
         }
        /* printf("\n=== Bot Details After Evolution ===\n");
@@ -158,15 +160,19 @@ void EvolutionManager::Initialize(bool resume) {
         float piecesWeight = dist(gen);
         float kingsWeight = dist(gen);
         float mobility = dist(gen);
-        population.emplace_back(EvaluationWeights(piecesWeight, kingsWeight,mobility));
+        float singleSupported = dist(gen);
+        float doublySupported = dist(gen);
+        population.emplace_back(EvaluationWeights(piecesWeight, kingsWeight,mobility,singleSupported,doublySupported));
     }
 
     printf("\n=== Initial Bot Weights ===\n");
     for (int i = 0; i < EvolutionConfig::POPULATION_SIZE; ++i) {
-        printf("Bot %d: Pieces = %.2f, Kings = %.2f, Mobility = %.2f\n",
+        printf("Bot %d: Pieces = %.2f, Kings = %.2f, Mobility = %.2f, Single supported = %.2f, Doubly supported = %.2f\n",
             i, population[i].weights.weights[static_cast<std::size_t>(Heuristic::PAWN_COUNT)],
             population[i].weights.weights[static_cast<std::size_t>(Heuristic::KING_COUNT)],
-            population[i].weights.weights[static_cast<std::size_t>(Heuristic::MOBILITY)]);
+            population[i].weights.weights[static_cast<std::size_t>(Heuristic::MOBILITY)],
+            population[i].weights.weights[static_cast<std::size_t>(Heuristic::SINGLE_SUPPORTED)],
+            population[i].weights.weights[static_cast<std::size_t>(Heuristic::DOUBLY_SUPPORTED)]);
     }
 }
 

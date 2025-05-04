@@ -35,16 +35,18 @@ public:
 	static  CheckersVector<uint32_t> GenerateMoves(uint32_t whitePieces, uint32_t blackPieces, uint32_t promotedPieces, bool isWhiteTurn);
 	static CheckersVector<Move> GenerateMovesWithNotation(uint32_t whitePieces, uint32_t blackPieces, uint32_t promotedPieces, bool isWhiteTurn);
 
+	static uint32_t GenerateWhitePawnMoveMask(int squareIndex);
+	static uint32_t GenerateBlackPawnMoveMask(int squareIndex);
+
 private:
+
 	static inline uint32_t whitePawnMoveMasks[32];
 	static inline uint32_t blackPawnMoveMasks[32];
 	static inline uint32_t rightUpSquareMasks[32];
 	static inline uint32_t leftUpSquareMasks[32];
 	static inline uint32_t rightDownSquareMasks[32];
 	static inline uint32_t leftDownSquareMasks[32];
-
-	static uint32_t GenerateWhitePawnMoveMask(int squareIndex);
-	static uint32_t GenerateBlackPawnMoveMask(int squareIndex);
+	
 	static uint32_t GenerateRightUpSquareMask(int squareIndex);
 	static uint32_t GenerateLeftUpSquareMask(int squareIndex);
 	static uint32_t GenerateRightDownSquareMask(int squareIndex);

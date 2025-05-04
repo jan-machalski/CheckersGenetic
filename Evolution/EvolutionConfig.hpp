@@ -6,7 +6,7 @@ namespace EvolutionConfig {
 
 
 	constexpr float MUTATION_RATE = 0.1f;      
-	constexpr float MUTATION_STD_DEV = 0.2f;
+	constexpr float MUTATION_STD_DEV = 0.6f;
 
 	constexpr float MIN_WEIGHT = -1.0f;
 	constexpr float MAX_WEIGHT = 1.0f;

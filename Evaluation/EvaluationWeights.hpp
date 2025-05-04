@@ -6,6 +6,8 @@ enum class Heuristic : std::size_t {
     PAWN_COUNT,
 	KING_COUNT,
     MOBILITY,
+	SINGLE_SUPPORTED,
+	DOUBLY_SUPPORTED,
     COUNT
 };
 
@@ -22,11 +24,13 @@ public:
 	EvaluationWeights(const EvaluationWeights& other) {
 		weights = other.weights;
 	}
-	EvaluationWeights(float piecesWeight, float kingsWeight, float mobility) {
+	EvaluationWeights(float piecesWeight, float kingsWeight, float mobility, float singleSupported, float doublySupported) {
 		weights.fill(0.0f);
 		weights[static_cast<std::size_t>(Heuristic::PAWN_COUNT)] = piecesWeight;
 		weights[static_cast<std::size_t>(Heuristic::KING_COUNT)] = kingsWeight;
 		weights[static_cast<std::size_t>(Heuristic::MOBILITY)] = mobility;
+		weights[static_cast<std::size_t>(Heuristic::SINGLE_SUPPORTED)] = singleSupported;
+		weights[static_cast<std::size_t>(Heuristic::DOUBLY_SUPPORTED)] = doublySupported;
 	}
 
 };
