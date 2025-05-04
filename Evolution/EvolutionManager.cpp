@@ -4,23 +4,82 @@
 #include <iostream>
 #include <mutex>
 #include <random>
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <fstream>
+#include <atomic>
 
 using namespace std;
 
-EvolutionManager::EvolutionManager() {
-    Initialize();
+EvolutionManager::EvolutionManager(bool resume) {
+    Initialize(resume);
 }
 
+
+std::atomic<bool> stopEvolution = false;
+
+BOOL WINAPI ConsoleHandler(DWORD signal) {
+    if (signal == CTRL_C_EVENT || signal == CTRL_CLOSE_EVENT) {
+        stopEvolution = true;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+void EvolutionManager::SavePopulationToFile(const std::string& filename) {
+    std::ofstream outFile(filename);
+    if (outFile.is_open()) {
+        for (const auto& bot : population) {
+            outFile << bot.weights.piecesWeight << " "
+                << bot.weights.kingsWeight << " "
+                << bot.score << "\n";
+        }
+        outFile.close();
+        printf("Progress saved to '%s'\n", filename.c_str());
+    }
+    else {
+        printf("Failed to save progress.\n");
+    }
+}
+
+bool EvolutionManager::LoadPopulationFromFile(const std::string& filename) {
+    std::ifstream inFile(filename);
+    if (!inFile.is_open()) return false;
+
+    population.clear();
+    float pieces, kings, score;
+    while (inFile >> pieces >> kings >> score) {
+        Bot bot(EvaluationWeights(pieces, kings));
+        bot.score = score;
+        population.push_back(bot);
+    }
+
+    inFile.close();
+    printf("Population loaded from '%s'\n", filename.c_str());
+    return !population.empty();
+}
+
+
 void EvolutionManager::Run() {
+    SetConsoleCtrlHandler(ConsoleHandler, TRUE);  // Handle Ctrl+C on Windows
+
     for (int generation = 0; generation < EvolutionConfig::GENERATIONS; ++generation) {
-        cout << "\n=== Generation " << generation + 1 << " ===\n";
+        if (stopEvolution) break;
+
+        printf("\n=== Generation %d ===\n", generation + 1);
 
         RunTournament();
 
-        // Print scores
-        cout << "\n=== Final Bot Scores After Tournament ===\n";
+        printf("\n=== Final Bot Scores After Tournament ===\n");
         for (int i = 0; i < population.size(); ++i) {
-            cout << "Bot " << i << " Score: " << population[i].score << endl;
+            printf("Bot %d Score: %.2f\n", i, population[i].score);
+        }
+
+        if (stopEvolution) {
+            SavePopulationToFile("evolution_save.txt");
+            printf("Evolution interrupted. Progress saved.\n");
+            break;
         }
 
         Bot bestBot = *std::max_element(population.begin(), population.end(),
@@ -32,41 +91,54 @@ void EvolutionManager::Run() {
             MinimaxPlayer newWhite = bestBot.CreatePlayer(true);
             MinimaxPlayer newBlack = bestBot.CreatePlayer(false);
 
-            int result1 = MatchBots(&prevWhite, &newBlack); 
-
-            int result2 = MatchBots(&newWhite, &prevBlack); 
-
+            int result1 = MatchBots(&prevWhite, &newBlack);
+            int result2 = MatchBots(&newWhite, &prevBlack);
             int scoreNewBot = -result1 + result2;
 
-            cout << "Match Results (New Bot vs Previous Best):\n";
-            cout << "  Game 1 (New as Black): " << (result1 == 1 ? "Loss" : result1 == -1 ? "Win" : "Draw") << "\n";
-            cout << "  Game 2 (New as White): " << (result2 == 1 ? "Win" : result2 == -1 ? "Loss" : "Draw") << "\n";
-            cout << "  Overall Score for New Bot: " << scoreNewBot << " (Win=1, Draw=0, Loss=-1 per game)\n";
+            printf("Match Results (New Bot vs Previous Best):\n");
+            printf("  Game 1 (New as Black): %s\n",
+                (result1 == 1 ? "Loss" : result1 == -1 ? "Win" : "Draw"));
+            printf("  Game 2 (New as White): %s\n",
+                (result2 == 1 ? "Win" : result2 == -1 ? "Loss" : "Draw"));
+            printf("  Overall Score for New Bot: %d\n", scoreNewBot);
         }
 
         EvaluateAgainstMonteCarlo(bestBot, generation);
-
         previousBest = bestBot;
         Evolve();
 
-        // Print weights of new generation
-        cout << "\n=== New Bot Weights After Evolution ===\n";
-        for (int i = 0; i < min(3, (int)population.size()); ++i) {
-            cout << "Bot " << i << ": Pieces = " << population[i].weights.piecesWeight
-                << ", Kings: " << population[i].weights.kingsWeight << endl;
+        printf("\n=== New Bot Weights After Evolution ===\n");
+        for (int i = 0; i < (int)population.size(); ++i) {
+            printf("Bot %d: Pieces = %.2f, Kings: %.2f\n",
+                i, population[i].weights.piecesWeight, population[i].weights.kingsWeight);
+        }
+        printf("\n=== Bot Details After Evolution ===\n");
+        for (int i = 0; i < population.size(); ++i) {
+            printf("Bot %d Weights -> Pieces: %.2f, Kings: %.2f | Score: %.2f\n",
+                i, population[i].weights.piecesWeight, population[i].weights.kingsWeight, population[i].score);
         }
 
-        cout << "\n=== Bot Details After Evolution ===\n";
-        for (int i = 0; i < population.size(); ++i) {
-            cout << "Bot " << i << " Weights -> Pieces: "
-                << population[i].weights.piecesWeight
-                << ", Kings: " << population[i].weights.kingsWeight
-                << " | Score: " << population[i].score << endl;
+        if (stopEvolution) {
+            SavePopulationToFile("evolution_save.txt");
+            printf("Evolution interrupted. Progress saved.\n");
+            break;
         }
     }
 }
 
-void EvolutionManager::Initialize() {
+void EvolutionManager::Initialize(bool resume) {
+    population.clear();
+
+    if (resume) {
+        if (LoadPopulationFromFile("evolution_save.txt")) {
+            printf("Population loaded from file. Resuming...\n");
+            return;
+        }
+        else {
+            printf("No saved file found. Starting fresh.\n");
+        }
+    }
+
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> dist(EvolutionConfig::MIN_WEIGHT, EvolutionConfig::MAX_WEIGHT);
@@ -77,27 +149,76 @@ void EvolutionManager::Initialize() {
         population.emplace_back(EvaluationWeights(piecesWeight, kingsWeight));
     }
 
-    cout << "\n=== Initial Bot Weights ===\n";
+    printf("\n=== Initial Bot Weights ===\n");
     for (int i = 0; i < EvolutionConfig::POPULATION_SIZE; ++i) {
-        cout << "Bot " << i << ": Pieces = " << population[i].weights.piecesWeight
-            << ", Kings = " << population[i].weights.kingsWeight << endl;
+        printf("Bot %d: Pieces = %.2f, Kings = %.2f\n",
+            i, population[i].weights.piecesWeight, population[i].weights.kingsWeight);
     }
 }
 
 void EvolutionManager::RunTournament() {
     std::vector<std::future<void>> futures;
-    for (size_t i = 0; i < population.size(); ++i) {
-        for (size_t j = i + 1; j < population.size(); ++j) {
-            futures.push_back(std::async(std::launch::async, [this, i, j]() {
-                PlayMatch(population[i], population[j]);
-                }));
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    size_t numBots = population.size();
+    std::vector<int> gamesPlayed(numBots, 0);
+
+    int totalGamesNeeded = EvolutionConfig::TOURNAMENT_ROUNDS * numBots / 2;
+    int gamesScheduled = 0;
+
+    while (gamesScheduled < totalGamesNeeded) {
+        size_t i = gen() % numBots;
+        size_t j;
+        do {
+            j = gen() % numBots;
+        } while (i == j);
+
+        if (gamesPlayed[i] >= EvolutionConfig::TOURNAMENT_ROUNDS ||
+            gamesPlayed[j] >= EvolutionConfig::TOURNAMENT_ROUNDS) {
+            continue;
         }
+
+        bool iIsWhite = gen() % 2 == 0;
+        gamesPlayed[i]++;
+        gamesPlayed[j]++;
+        gamesScheduled++;
+
+        futures.push_back(std::async(std::launch::async, [this, i, j, iIsWhite]() {
+            PlaySingleMatch(population[i], population[j], iIsWhite);
+            }));
     }
 
     for (auto& fut : futures) {
         fut.get();
     }
 }
+
+
+void EvolutionManager::PlaySingleMatch(Bot& botA, Bot& botB, bool botAWhite) {
+    Player* white = botAWhite ? new MinimaxPlayer(botA.CreatePlayer(true)) : new MinimaxPlayer(botB.CreatePlayer(true));
+    Player* black = botAWhite ? new MinimaxPlayer(botB.CreatePlayer(false)) : new MinimaxPlayer(botA.CreatePlayer(false));
+
+    Game game(white, black);
+    Game::Result result = game.Play();
+
+    std::lock_guard<std::mutex> lock(scoreMutex);
+    if (result == Game::WHITE_WINS) {
+        (botAWhite ? botA : botB).score += 2;
+    }
+    else if (result == Game::BLACK_WINS) {
+        (botAWhite ? botB : botA).score += 2;
+    }
+    else {
+        botA.score += 1;
+        botB.score += 1;
+    }
+
+    delete white;
+    delete black;
+}
+
+
 
 void EvolutionManager::PlayMatch(Bot& botA, Bot& botB) {
     auto whiteA = botA.CreatePlayer(true);
@@ -222,8 +343,7 @@ void EvolutionManager::EvaluateAgainstMonteCarlo(const Bot& bestBot, int generat
         else if (r2 == -1) bestBotWins++;
         else draws++;
     }
+    printf("Gen %d: BestBot Wins = %d, MonteCarlo Wins = %d, Draws = %d\n",
+        generation + 1, bestBotWins, monteCarloWins, draws);
 
-    cout << "Gen " << generation + 1 << ": BestBot Wins = " << bestBotWins
-        << ", MonteCarlo Wins = " << monteCarloWins
-        << ", Draws = " << draws << endl;
 }
