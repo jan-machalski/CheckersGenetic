@@ -16,5 +16,6 @@ public:
 private:
 	int PawnsCountDiff(const Board& board) const;
 	int KingsCountDiff(const Board& board) const;
+	int Mobility(const Board& board) const;
 };
 

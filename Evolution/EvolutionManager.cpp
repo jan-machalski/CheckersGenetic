@@ -31,9 +31,11 @@ void EvolutionManager::SavePopulationToFile(const std::string& filename) {
     std::ofstream outFile(filename);
     if (outFile.is_open()) {
         for (const auto& bot : population) {
-            outFile << bot.weights.piecesWeight << " "
-                << bot.weights.kingsWeight << " "
-                << bot.score << "\n";
+
+			for (int i = 0; i < static_cast<std::size_t>(Heuristic::COUNT); ++i) {
+				outFile << bot.weights.weights[i] << " ";
+			}
+            outFile << "\n";
         }
         outFile.close();
         printf("Progress saved to '%s'\n", filename.c_str());
@@ -48,9 +50,9 @@ bool EvolutionManager::LoadPopulationFromFile(const std::string& filename) {
     if (!inFile.is_open()) return false;
 
     population.clear();
-    float pieces, kings, score;
-    while (inFile >> pieces >> kings >> score) {
-        Bot bot(EvaluationWeights(pieces, kings));
+    float pieces, kings, mobility, score;
+    while (inFile >> pieces >> kings >> mobility >> score) {
+        Bot bot(EvaluationWeights(pieces, kings, mobility));
         bot.score = score;
         population.push_back(bot);
     }
@@ -115,14 +117,17 @@ void EvolutionManager::Run() {
 
         printf("\n=== New Bot Weights After Evolution ===\n");
         for (int i = 0; i < (int)population.size(); ++i) {
-            printf("Bot %d: Pieces = %.2f, Kings: %.2f\n",
-                i, population[i].weights.piecesWeight, population[i].weights.kingsWeight);
+            printf("Bot %d: Pieces = %.2f, Kings: %.2f, Mobility: %.2f\n",
+                i, population[i].weights.weights[static_cast<std::size_t>(Heuristic::PAWN_COUNT)],
+                population[i].weights.weights[static_cast<std::size_t>(Heuristic::KING_COUNT)],
+				population[i].weights.weights[static_cast<std::size_t>(Heuristic::MOBILITY)]
+                );
         }
-        printf("\n=== Bot Details After Evolution ===\n");
+       /* printf("\n=== Bot Details After Evolution ===\n");
         for (int i = 0; i < population.size(); ++i) {
             printf("Bot %d Weights -> Pieces: %.2f, Kings: %.2f | Score: %.2f\n",
                 i, population[i].weights.piecesWeight, population[i].weights.kingsWeight, population[i].score);
-        }
+        }*/
 
         if (stopEvolution) {
             SavePopulationToFile("evolution_save.txt");
@@ -152,13 +157,16 @@ void EvolutionManager::Initialize(bool resume) {
     for (int i = 0; i < EvolutionConfig::POPULATION_SIZE; ++i) {
         float piecesWeight = dist(gen);
         float kingsWeight = dist(gen);
-        population.emplace_back(EvaluationWeights(piecesWeight, kingsWeight));
+        float mobility = dist(gen);
+        population.emplace_back(EvaluationWeights(piecesWeight, kingsWeight,mobility));
     }
 
     printf("\n=== Initial Bot Weights ===\n");
     for (int i = 0; i < EvolutionConfig::POPULATION_SIZE; ++i) {
-        printf("Bot %d: Pieces = %.2f, Kings = %.2f\n",
-            i, population[i].weights.piecesWeight, population[i].weights.kingsWeight);
+        printf("Bot %d: Pieces = %.2f, Kings = %.2f, Mobility = %.2f\n",
+            i, population[i].weights.weights[static_cast<std::size_t>(Heuristic::PAWN_COUNT)],
+            population[i].weights.weights[static_cast<std::size_t>(Heuristic::KING_COUNT)],
+            population[i].weights.weights[static_cast<std::size_t>(Heuristic::MOBILITY)]);
     }
 }
 
@@ -284,8 +292,10 @@ const Bot& EvolutionManager::SelectParent() {
 
 EvaluationWeights EvolutionManager::Crossover(const Bot& p1, const Bot& p2) {
     EvaluationWeights child;
-    child.piecesWeight = (p1.weights.piecesWeight + p2.weights.piecesWeight) / 2.0f;
-    child.kingsWeight = (p1.weights.kingsWeight + p2.weights.kingsWeight) / 2.0f;
+
+    for (int i = 0; i < static_cast<std::size_t>(Heuristic::COUNT); ++i) {
+		child.weights[i] = (p1.weights.weights[i] + p2.weights.weights[i]) / 2.0f;
+	}
     return child;
 }
 
@@ -297,13 +307,14 @@ EvaluationWeights EvolutionManager::Mutate(const EvaluationWeights& w) {
     std::uniform_real_distribution<float> chance(0.0f, 1.0f);
     std::normal_distribution<float> amount(0.0f, EvolutionConfig::MUTATION_STD_DEV);
 
-    if (chance(gen) < EvolutionConfig::MUTATION_RATE)
-        mutated.piecesWeight += amount(gen);
-    if (chance(gen) < EvolutionConfig::MUTATION_RATE)
-        mutated.kingsWeight += amount(gen);
-
-    mutated.piecesWeight = std::clamp(mutated.piecesWeight, EvolutionConfig::MIN_WEIGHT, EvolutionConfig::MAX_WEIGHT);
-    mutated.kingsWeight = std::clamp(mutated.kingsWeight, EvolutionConfig::MIN_WEIGHT, EvolutionConfig::MAX_WEIGHT);
+	for (int i = 0; i < static_cast<std::size_t>(Heuristic::COUNT); ++i) {
+		if (chance(gen) < EvolutionConfig::MUTATION_RATE)
+			mutated.weights[i] += amount(gen);
+	}
+    
+	for (int i = 0; i < static_cast<std::size_t>(Heuristic::COUNT); ++i) {
+		mutated.weights[i] = std::clamp(mutated.weights[i], EvolutionConfig::MIN_WEIGHT, EvolutionConfig::MAX_WEIGHT);
+	}
 
     return mutated;
 }
