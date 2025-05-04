@@ -2,7 +2,7 @@
 
 namespace EvolutionConfig {
 	constexpr int POPULATION_SIZE = 10;
-	constexpr int GENERATIONS = 6;
+	constexpr int GENERATIONS = 12;
 
 
 	constexpr float MUTATION_RATE = 0.1f;      

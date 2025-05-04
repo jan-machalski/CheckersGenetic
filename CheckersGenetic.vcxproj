@@ -153,6 +153,9 @@
     <ClInclude Include="Evaluation\EvaluationWeights.hpp" />
     <ClInclude Include="Evaluation\Evaluator.hpp" />
     <ClInclude Include="Evaluation\TranspositionTable.hpp" />
+    <ClInclude Include="Evolution\Bot.hpp" />
+    <ClInclude Include="Evolution\EvolutionConfig.hpp" />
+    <ClInclude Include="Evolution\EvolutionManager.hpp" />
     <ClInclude Include="Game\Game.hpp" />
     <ClInclude Include="Players\HumanPlayer.hpp" />
     <ClInclude Include="Players\MinimaxPlayer.hpp" />
@@ -164,9 +167,6 @@
     <ClInclude Include="Utils\json.hpp" />
     <ClInclude Include="Utils\Judge.hpp" />
     <ClInclude Include="Utils\Utils.hpp" />
-    <ClInclude Include="EvolutionConfig.hpp" />
-    <ClInclude Include="EvolutionManager.hpp" />
-    <ClInclude Include="Bot.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

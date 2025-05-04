@@ -52,6 +52,10 @@ uint32_t MinimaxPlayer::iterativeDeepening()
 		
 		for (uint32_t move : moves)
 		{
+			auto currentTime = std::chrono::high_resolution_clock::now();
+			if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() > timePerMove)
+				break;
+
 			auto tmpBoard = board.MakeMove(move);
 			bool moveIsCapture = board.isCapture(move);
 		

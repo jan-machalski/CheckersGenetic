@@ -20,7 +20,22 @@ public:
         uint32_t bestMove = 0;
     };
 
-    explicit TranspositionTable(size_t sizeInMB = 64);
+    explicit TranspositionTable(size_t sizeInMB = 16);
+    TranspositionTable(const TranspositionTable& other) {
+        size = other.size;
+        table = new Entry[size];
+        std::memcpy(table, other.table, size * sizeof(Entry));
+    }
+
+    TranspositionTable& operator=(const TranspositionTable& other) {
+        if (this != &other) {
+            delete[] table;
+            size = other.size;
+            table = new Entry[size];
+            std::memcpy(table, other.table, size * sizeof(Entry));
+        }
+        return *this;
+    }
 
     void store(uint64_t zobristHash, int depth, float value, NodeType type, uint32_t bestMove);
     bool probe(uint64_t zobristHash, int requiredDepth, int& outDepth, float& outValue, NodeType& outType, uint32_t& outBestMove);
@@ -29,8 +44,11 @@ public:
     static void initZobristKeys();
     static uint64_t computeZobristHash(const Board& board);
 
+    ~TranspositionTable();
+
 private:
-    std::vector<Entry> table;
+
+    Entry* table = nullptr;
     size_t size;
 
     static uint64_t zobristPieces[2][32];

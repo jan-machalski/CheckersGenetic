@@ -81,19 +81,25 @@ void EvolutionManager::Run() {
             printf("Evolution interrupted. Progress saved.\n");
             break;
         }
-
+        
         Bot bestBot = *std::max_element(population.begin(), population.end(),
             [](const Bot& a, const Bot& b) { return a.score < b.score; });
 
         if (generation > 0) {
-            MinimaxPlayer prevWhite = previousBest.CreatePlayer(true);
-            MinimaxPlayer prevBlack = previousBest.CreatePlayer(false);
-            MinimaxPlayer newWhite = bestBot.CreatePlayer(true);
-            MinimaxPlayer newBlack = bestBot.CreatePlayer(false);
+			printf("Evaluating against previous best bot...\n");
+            MinimaxPlayer* prevWhite = previousBest.CreatePlayer(true);
+            MinimaxPlayer* prevBlack = previousBest.CreatePlayer(false);
+            MinimaxPlayer* newWhite = bestBot.CreatePlayer(true);
+            MinimaxPlayer* newBlack = bestBot.CreatePlayer(false);
 
-            int result1 = MatchBots(&prevWhite, &newBlack);
-            int result2 = MatchBots(&newWhite, &prevBlack);
+            int result1 = MatchBots(prevWhite, newBlack);
+            int result2 = MatchBots(newWhite, prevBlack);
             int scoreNewBot = -result1 + result2;
+
+            delete prevWhite;
+            delete prevBlack;
+            delete newWhite;
+            delete newBlack;
 
             printf("Match Results (New Bot vs Previous Best):\n");
             printf("  Game 1 (New as Black): %s\n",
@@ -157,7 +163,9 @@ void EvolutionManager::Initialize(bool resume) {
 }
 
 void EvolutionManager::RunTournament() {
-    std::vector<std::future<void>> futures;
+    printf("Running tournament\n");
+
+	std::vector<std::future<void>> futures;
     std::random_device rd;
     std::mt19937 gen(rd());
 
@@ -176,7 +184,7 @@ void EvolutionManager::RunTournament() {
 
         if (gamesPlayed[i] >= EvolutionConfig::TOURNAMENT_ROUNDS ||
             gamesPlayed[j] >= EvolutionConfig::TOURNAMENT_ROUNDS) {
-            continue; 
+            continue;
         }
 
         bool iIsWhite = gen() % 2 == 0;
@@ -187,20 +195,40 @@ void EvolutionManager::RunTournament() {
         futures.push_back(std::async(std::launch::async, [this, i, j, iIsWhite]() {
             PlaySingleMatch(population[i], population[j], iIsWhite);
             }));
+           
     }
+	std::atomic<int> completedGames = 0;
+    printf("Tournament progress: %d/%d games completed (%.1f%%)         \n",
+        completedGames.load(), totalGamesNeeded, 0);
+    fflush(stdout);
 
     for (auto& fut : futures) {
         fut.get();
+
+        completedGames++;
+        float progressPercent = (float)completedGames / totalGamesNeeded * 100.0f;
+
+        printf("Tournament progress: %d/%d games completed (%.1f%%)         \r",
+            completedGames.load(), totalGamesNeeded, progressPercent);
+        fflush(stdout);
     }
+    printf("\nTournament completed\n");
+
+
 }
 
 
 void EvolutionManager::PlaySingleMatch(Bot& botA, Bot& botB, bool botAWhite) {
-    Player* white = botAWhite ? new MinimaxPlayer(botA.CreatePlayer(true)) : new MinimaxPlayer(botB.CreatePlayer(true));
-    Player* black = botAWhite ? new MinimaxPlayer(botB.CreatePlayer(false)) : new MinimaxPlayer(botA.CreatePlayer(false));
+    std::unique_ptr<Player> white(botAWhite
+        ? botA.CreatePlayer(true)
+        : botB.CreatePlayer(true));
 
-    Game game(white, black);
-    Game::Result result = game.Play();
+    std::unique_ptr<Player> black(botAWhite
+        ? botB.CreatePlayer(false)
+        : botA.CreatePlayer(false));
+
+    Game game(white.get(), black.get());
+    Game::Result result = game.Simulate();
 
     std::lock_guard<std::mutex> lock(scoreMutex);
     if (result == Game::WHITE_WINS) {
@@ -214,37 +242,8 @@ void EvolutionManager::PlaySingleMatch(Bot& botA, Bot& botB, bool botAWhite) {
         botB.score += 1;
     }
 
-    delete white;
-    delete black;
 }
 
-
-
-void EvolutionManager::PlayMatch(Bot& botA, Bot& botB) {
-    auto whiteA = botA.CreatePlayer(true);
-    auto blackB = botB.CreatePlayer(false);
-    Game game1(&whiteA, &blackB);
-    Game::Result result1 = game1.Play();
-
-    {
-        std::lock_guard<std::mutex> lock(scoreMutex);
-        if (result1 == Game::WHITE_WINS) botA.score += 2;
-        else if (result1 == Game::BLACK_WINS) botB.score += 2;
-        else { botA.score += 1; botB.score += 1; }
-    }
-
-    auto whiteB = botB.CreatePlayer(true);
-    auto blackA = botA.CreatePlayer(false);
-    Game game2(&whiteB, &blackA);
-    Game::Result result2 = game2.Play();
-
-    {
-        std::lock_guard<std::mutex> lock(scoreMutex);
-        if (result2 == Game::WHITE_WINS) botB.score += 2;
-        else if (result2 == Game::BLACK_WINS) botA.score += 2;
-        else { botA.score += 1; botB.score += 1; }
-    }
-}
 
 void EvolutionManager::Evolve() {
     std::vector<Bot> newPopulation;
@@ -314,7 +313,7 @@ EvaluationWeights EvolutionManager::Mutate(const EvaluationWeights& w) {
 
 int EvolutionManager::MatchBots(Player* white, Player* black) {
     Game game(white, black);
-    Game::Result result = game.Play();
+    Game::Result result = game.Simulate();
     if (result == Game::WHITE_WINS) return 1;
     else if (result == Game::BLACK_WINS) return -1;
     return 0;
@@ -326,14 +325,17 @@ void EvolutionManager::EvaluateAgainstMonteCarlo(const Bot& bestBot, int generat
     int draws = 0;
     const int gamesPerSide = 5;
 
-    for (int i = 0; i < gamesPerSide; ++i) {
-        MonteCarloPlayer mcWhite(true, 100);
-        MonteCarloPlayer mcBlack(false, 100);
-        MinimaxPlayer botWhite = bestBot.CreatePlayer(true);
-        MinimaxPlayer botBlack = bestBot.CreatePlayer(false);
+	printf("Evaluating against Monte Carlo...\n");
+	printf("Games evaluated: 0/%d\n", gamesPerSide);
 
-        int r1 = MatchBots(&botWhite, &mcBlack);
-        int r2 = MatchBots(&mcWhite, &botBlack);
+    for (int i = 0; i < gamesPerSide; ++i) {
+        MonteCarloPlayer* mcWhite = new MonteCarloPlayer(true, 100);
+        MonteCarloPlayer* mcBlack = new MonteCarloPlayer(false, 100);
+        MinimaxPlayer* botWhite = bestBot.CreatePlayer(true);
+        MinimaxPlayer* botBlack = bestBot.CreatePlayer(false);
+
+        int r1 = MatchBots(botWhite, mcBlack);
+        int r2 = MatchBots(mcWhite, botBlack);
 
         if (r1 == 1) bestBotWins++;
         else if (r1 == -1) monteCarloWins++;
@@ -342,6 +344,12 @@ void EvolutionManager::EvaluateAgainstMonteCarlo(const Bot& bestBot, int generat
         if (r2 == 1) monteCarloWins++;
         else if (r2 == -1) bestBotWins++;
         else draws++;
+		printf("Games evaluated: %d/%d\r", i + 1, gamesPerSide);
+
+        delete mcWhite;
+        delete mcBlack;
+        delete botWhite;
+        delete botBlack;
     }
     printf("Gen %d: BestBot Wins = %d, MonteCarlo Wins = %d, Draws = %d\n",
         generation + 1, bestBotWins, monteCarloWins, draws);

@@ -8,6 +8,7 @@ void MonteCarloPlayer::DeleteNode(TreeNode* node)
 	{
 		DeleteNode(child);
 	}
+	delete node;
 }
 uint8_t MonteCarloPlayer::Simulation(Board board)
 {

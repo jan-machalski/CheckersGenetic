@@ -1,6 +1,7 @@
 #include "TranspositionTable.hpp"
 
 #include <random>
+#include<cstring>
 
 uint64_t TranspositionTable::zobristPieces[2][32];
 uint64_t TranspositionTable::zobristKings[2][32];
@@ -11,8 +12,15 @@ TranspositionTable::TranspositionTable(size_t sizeInMB) {
 
 	size = getPrimeSize(entries);
 
-    table.resize(size);
+    table = new Entry[size];
+
     clear();
+}
+
+TranspositionTable::~TranspositionTable() {
+	delete[] table;
+    table = nullptr;
+    size = 0;
 }
 
 void TranspositionTable::store(uint64_t zobristHash, int depth, float value, NodeType type, uint32_t bestMove) {
@@ -43,7 +51,8 @@ bool TranspositionTable::probe(uint64_t zobristHash, int requiredDepth, int& out
 }
 
 void TranspositionTable::clear() {
-    std::fill(table.begin(), table.end(), Entry{});
+    if (table)
+        std::memset(table, 0, size * sizeof(Entry));
 }
 
 void TranspositionTable::initZobristKeys() {

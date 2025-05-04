@@ -8,9 +8,9 @@
 class MinimaxPlayer : public Player
 {
 private:
+
 	Evaluator evaluator;
 
-	TranspositionTable transpositionTable;
 
 	const uint32_t timePerMove;
 	const int maxDepth;
@@ -26,7 +26,7 @@ private:
 public:
     MinimaxPlayer(bool isWhite, uint32_t timePerMove, int maxDepth = 20)
         : Player(isWhite), evaluator(), timePerMove(timePerMove), maxDepth(maxDepth),
-        transpositionTable(64) {
+        transpositionTable(16) {
         static bool zobristInitialized = false;
         if (!zobristInitialized) {
             TranspositionTable::initZobristKeys();
@@ -36,13 +36,17 @@ public:
 
     MinimaxPlayer(bool isWhite, uint32_t timePerMove, const EvaluationWeights& weights, int maxDepth = 20)
         : Player(isWhite), evaluator(weights), timePerMove(timePerMove), maxDepth(maxDepth),
-        transpositionTable(64) {
+        transpositionTable(16) {
         static bool zobristInitialized = false;
         if (!zobristInitialized) {
             TranspositionTable::initZobristKeys();
             zobristInitialized = true;
         }
     }
+
+    TranspositionTable transpositionTable;
+
+    ~MinimaxPlayer() = default;
 
 	uint32_t MakeMove() override;
 	void InputMove(uint32_t moveMask) override;

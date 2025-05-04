@@ -24,6 +24,6 @@ public:
 	};
 
 	Result Play();
-	std::future<std::pair<Result, std::vector<std::string>>> SimulateAsync();
+	Result Simulate();
 
 };

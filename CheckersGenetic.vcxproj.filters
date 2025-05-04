@@ -111,17 +111,17 @@
     <ClInclude Include="Utils\Utils.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Bot.hpp">
+    <ClInclude Include="Utils\json.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Evolution\Bot.hpp">
       <Filter>Evolution</Filter>
     </ClInclude>
-    <ClInclude Include="EvolutionConfig.hpp">
+    <ClInclude Include="Evolution\EvolutionConfig.hpp">
       <Filter>Evolution</Filter>
     </ClInclude>
-    <ClInclude Include="EvolutionManager.hpp">
+    <ClInclude Include="Evolution\EvolutionManager.hpp">
       <Filter>Evolution</Filter>
     </ClInclude>
-	<ClInclude Include="Utils\json.hpp">
-		<Filter>Utils</Filter>
-	</ClInclude>
   </ItemGroup>
 </Project>
