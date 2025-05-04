@@ -1,4 +1,5 @@
 #include "Evaluator.hpp"
+#include "PromotionMasks.hpp"
 
 float Evaluator::Evaluate(const Board& board) const
 {
@@ -12,6 +13,7 @@ float Evaluator::Evaluate(const Board& board) const
 	score += supportInfo.doublySupportedDiff * weights.weights[static_cast<std::size_t>(Heuristic::DOUBLY_SUPPORTED)];
 
 	score += PromotionDistance(board) * weights.weights[static_cast<std::size_t>(Heuristic::PROMOTION_DISTANCE)];
+	score += FreePawnsCountDiff(board) * weights.weights[static_cast<std::size_t>(Heuristic::FREE_PAWNS)];
 
 	return board.isWhiteTurn ? score : -score;
 }
@@ -41,6 +43,9 @@ SupportedPawnsInfo Evaluator::SupportedPawnsCountDiff(const Board& board) const
 
 	uint32_t whitePawns = board.whitePieces & (~board.promotedPieces);
 	uint32_t blackPawns = board.blackPieces & (~board.promotedPieces);
+
+	float blackPawnsCount = float(std::popcount(blackPawns));
+	float whitePawnsCount = float(std::popcount(whitePawns));
 
 	uint32_t whiteSupported = 0;
 	uint32_t whiteDoublySupported = 0;
@@ -75,22 +80,67 @@ SupportedPawnsInfo Evaluator::SupportedPawnsCountDiff(const Board& board) const
 		}
 	}
 
-	result.singlySupportedDiff = std::popcount(whiteSupported) - std::popcount(blackSupported);
-	result.doublySupportedDiff = std::popcount(whiteDoublySupported) - std::popcount(blackDoublySupported);
+	result.singlySupportedDiff = std::popcount(whiteSupported)/whitePawnsCount - std::popcount(blackSupported)/blackPawnsCount;
+	result.doublySupportedDiff = std::popcount(whiteDoublySupported)/whitePawnsCount - std::popcount(blackDoublySupported)/blackPawnsCount;
 	return result;
 }
 
-int Evaluator::PromotionDistance(const Board& board) const
+float Evaluator::PromotionDistance(const Board& board) const
 {
 	int whiteDistance = 0;
 	int blackDistance = 0;
 
+	uint32_t whitePawns = board.whitePieces & (~board.promotedPieces);
+	uint32_t blackPawns = board.blackPieces & (~board.promotedPieces);
+
 	for (int i = 0; i < 8; i++)
 	{
-		whiteDistance += std::popcount(board.whitePieces & ROW_MASKS[i]) * (i);
-		blackDistance += std::popcount(board.blackPieces & ROW_MASKS[i]) * (7 - i);
+		whiteDistance += std::popcount(whitePawns & ROW_MASKS[i]) * (i);
+		blackDistance += std::popcount(blackPawns & ROW_MASKS[i]) * (7 - i);
 	}
-	return whiteDistance - blackDistance;
+
+	float whiteResult = whitePawns ? whiteDistance/std::popcount(whitePawns) : 0;
+	float blackResult = blackPawns ? blackDistance / std::popcount(blackPawns) : 0;
+
+	return whiteResult - blackResult;
+}
+
+int Evaluator::FreePawnsCountDiff(const Board& board) const
+{
+	uint32_t whitePawns = board.whitePieces & (~board.promotedPieces);
+	uint32_t blackPawns = board.blackPieces & (~board.promotedPieces);
+	int whiteFreePawns = 0;
+	int blackFreePawns = 0;
+
+	if(!(board.blackPieces & board.promotedPieces))
+	{
+		while (whitePawns)
+		{
+			int squareIndex = std::countr_zero(whitePawns);
+			whitePawns &= ~(1u << squareIndex);
+			if (!(PROMOTION_PATHS_WHITE[squareIndex] & blackPawns))
+				whiteFreePawns++;
+		}
+	}
+
+	if(!(board.whitePieces & board.promotedPieces))
+	{
+		while (blackPawns)
+		{
+			int squareIndex = std::countr_zero(blackPawns);
+			blackPawns &= ~(1u << squareIndex);
+			if (!(PROMOTION_PATHS_BLACK[squareIndex] & whitePawns))
+				blackFreePawns++;
+		}
+	}
+	while (blackPawns)
+	{
+		int squareIndex = std::countr_zero(blackPawns);
+		blackPawns &= ~(1u << squareIndex);
+		if (!(whitePawnMoveMasks[squareIndex] & board.whitePieces))
+			blackFreePawns++;
+	}
+	return whiteFreePawns - blackFreePawns;
 }
 
 

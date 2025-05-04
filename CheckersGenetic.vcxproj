@@ -152,6 +152,7 @@
     <ClInclude Include="Board\QueenMoveDirections.hpp" />
     <ClInclude Include="Evaluation\EvaluationWeights.hpp" />
     <ClInclude Include="Evaluation\Evaluator.hpp" />
+    <ClInclude Include="Evaluation\PromotionMasks.hpp" />
     <ClInclude Include="Evaluation\TranspositionTable.hpp" />
     <ClInclude Include="Evolution\Bot.hpp" />
     <ClInclude Include="Evolution\EvolutionConfig.hpp" />

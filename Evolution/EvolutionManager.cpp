@@ -50,9 +50,9 @@ bool EvolutionManager::LoadPopulationFromFile(const std::string& filename) {
     if (!inFile.is_open()) return false;
 
     population.clear();
-    float pieces, kings, mobility, singleSupported, doublySupported, promotionDistance, score;
-    while (inFile >> pieces >> kings >> mobility >> singleSupported >> doublySupported >> promotionDistance >> score) {
-        Bot bot(EvaluationWeights(pieces, kings, mobility, singleSupported, doublySupported, promotionDistance));
+    float pieces, kings, mobility, singleSupported, doublySupported, promotionDistance, freePawns, score;
+    while (inFile >> pieces >> kings >> mobility >> singleSupported >> doublySupported >> promotionDistance >> freePawns >> score) {
+        Bot bot(EvaluationWeights(pieces, kings, mobility, singleSupported, doublySupported, promotionDistance, freePawns));
         bot.score = score;
         population.push_back(bot);
     }
@@ -117,7 +117,7 @@ void EvolutionManager::Run() {
 
         printf("\n=== New Bot Weights After Evolution ===\n");
         for (int i = 0; i < (int)population.size(); ++i) {
-            printf("Bot %d:");
+            printf("Bot %d:",i);
 			population[i].weights.Print();
         }
        /* printf("\n=== Bot Details After Evolution ===\n");
@@ -158,7 +158,8 @@ void EvolutionManager::Initialize(bool resume) {
         float singleSupported = dist(gen);
         float doublySupported = dist(gen);
 		float promotionDistance = dist(gen);
-        population.emplace_back(EvaluationWeights(piecesWeight, kingsWeight,mobility,singleSupported,doublySupported, promotionDistance));
+		float freePawns = dist(gen);
+        population.emplace_back(EvaluationWeights(piecesWeight, kingsWeight,mobility,singleSupported,doublySupported, promotionDistance, freePawns));
     }
 
     printf("\n=== Initial Bot Weights ===\n");
@@ -202,7 +203,7 @@ void EvolutionManager::RunTournament() {
     }
 	std::atomic<int> completedGames = 0;
     printf("Tournament progress: %d/%d games completed (%.1f%%)         \n",
-        completedGames.load(), totalGamesNeeded, 0);
+        completedGames.load(), totalGamesNeeded, 0.0);
     fflush(stdout);
 
     for (auto& fut : futures) {

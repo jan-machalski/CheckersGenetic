@@ -123,5 +123,8 @@
     <ClInclude Include="Evolution\EvolutionManager.hpp">
       <Filter>Evolution</Filter>
     </ClInclude>
+    <ClInclude Include="Evaluation\PromotionMasks.hpp">
+      <Filter>Evaluation</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

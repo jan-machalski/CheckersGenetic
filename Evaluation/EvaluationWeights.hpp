@@ -9,6 +9,7 @@ enum class Heuristic : std::size_t {
 	SINGLE_SUPPORTED,
 	DOUBLY_SUPPORTED,
 	PROMOTION_DISTANCE,
+	FREE_PAWNS,
     COUNT
 };
 
@@ -25,7 +26,7 @@ public:
 	EvaluationWeights(const EvaluationWeights& other) {
 		weights = other.weights;
 	}
-	EvaluationWeights(float piecesWeight, float kingsWeight, float mobility, float singleSupported, float doublySupported, float promotionDistance) {
+	EvaluationWeights(float piecesWeight, float kingsWeight, float mobility, float singleSupported, float doublySupported, float promotionDistance, float freePawns) {
 		weights.fill(0.0f);
 		weights[static_cast<std::size_t>(Heuristic::PAWN_COUNT)] = piecesWeight;
 		weights[static_cast<std::size_t>(Heuristic::KING_COUNT)] = kingsWeight;
@@ -33,15 +34,17 @@ public:
 		weights[static_cast<std::size_t>(Heuristic::SINGLE_SUPPORTED)] = singleSupported;
 		weights[static_cast<std::size_t>(Heuristic::DOUBLY_SUPPORTED)] = doublySupported;
 		weights[static_cast<std::size_t>(Heuristic::PROMOTION_DISTANCE)] = promotionDistance;
+		weights[static_cast<std::size_t>(Heuristic::FREE_PAWNS)] = freePawns;
 	}
 	void Print() const {
-		printf(" Pieces = % .2f, Kings = % .2f, Mobility = % .2f, Single supported = % .2f, Doubly supported = % .2f, Promotion distance = % .2f\n",
+		printf(" Pieces = % .2f, Kings = % .2f, Mobility = % .2f, Single supported = % .2f, Doubly supported = % .2f, Promotion distance = % .2f, Free pawns = % .2f\n",
 			weights[static_cast<std::size_t>(Heuristic::PAWN_COUNT)],
 			weights[static_cast<std::size_t>(Heuristic::KING_COUNT)],
 			weights[static_cast<std::size_t>(Heuristic::MOBILITY)],
 			weights[static_cast<std::size_t>(Heuristic::SINGLE_SUPPORTED)],
 			weights[static_cast<std::size_t>(Heuristic::DOUBLY_SUPPORTED)],
-			weights[static_cast<std::size_t>(Heuristic::PROMOTION_DISTANCE)]);
+			weights[static_cast<std::size_t>(Heuristic::PROMOTION_DISTANCE)],
+			weights[static_cast<std::size_t>(Heuristic::FREE_PAWNS)]); 
 	}
 
 };

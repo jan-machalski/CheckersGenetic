@@ -10,8 +10,8 @@ static constexpr uint32_t ROW_MASKS[8] = {
 };
 
 struct SupportedPawnsInfo {
-	int singlySupportedDiff;
-	int doublySupportedDiff;
+	float singlySupportedDiff;
+	float doublySupportedDiff;
 };
 
 class Evaluator  
@@ -33,5 +33,7 @@ private:
   int KingsCountDiff(const Board& board) const;  
   int Mobility(const Board& board) const;  
   SupportedPawnsInfo SupportedPawnsCountDiff(const Board& board) const;
-  int PromotionDistance(const Board& board) const;
+  float PromotionDistance(const Board& board) const;
+  int FreePawnsCountDiff(const Board& board) const;
+
 };
