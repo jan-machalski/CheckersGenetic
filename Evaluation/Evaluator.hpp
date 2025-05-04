@@ -4,6 +4,10 @@
 #include "MoveGenerator.h"  
 
 static constexpr uint32_t BAND_MASK = 0x81818181;
+static constexpr uint32_t ROW_MASKS[8] = {
+	0xF0000000, 0x0F000000, 0x00F00000, 0x000F0000,
+	0x0000F000, 0x00000F00, 0x000000F0, 0x0000000F
+};
 
 struct SupportedPawnsInfo {
 	int singlySupportedDiff;
@@ -29,4 +33,5 @@ private:
   int KingsCountDiff(const Board& board) const;  
   int Mobility(const Board& board) const;  
   SupportedPawnsInfo SupportedPawnsCountDiff(const Board& board) const;
+  int PromotionDistance(const Board& board) const;
 };

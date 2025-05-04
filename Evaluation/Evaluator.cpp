@@ -11,6 +11,8 @@ float Evaluator::Evaluate(const Board& board) const
 	score += supportInfo.singlySupportedDiff * weights.weights[static_cast<std::size_t>(Heuristic::SINGLE_SUPPORTED)];
 	score += supportInfo.doublySupportedDiff * weights.weights[static_cast<std::size_t>(Heuristic::DOUBLY_SUPPORTED)];
 
+	score += PromotionDistance(board) * weights.weights[static_cast<std::size_t>(Heuristic::PROMOTION_DISTANCE)];
+
 	return board.isWhiteTurn ? score : -score;
 }
 
@@ -76,6 +78,19 @@ SupportedPawnsInfo Evaluator::SupportedPawnsCountDiff(const Board& board) const
 	result.singlySupportedDiff = std::popcount(whiteSupported) - std::popcount(blackSupported);
 	result.doublySupportedDiff = std::popcount(whiteDoublySupported) - std::popcount(blackDoublySupported);
 	return result;
+}
+
+int Evaluator::PromotionDistance(const Board& board) const
+{
+	int whiteDistance = 0;
+	int blackDistance = 0;
+
+	for (int i = 0; i < 8; i++)
+	{
+		whiteDistance += std::popcount(board.whitePieces & ROW_MASKS[i]) * (i);
+		blackDistance += std::popcount(board.blackPieces & ROW_MASKS[i]) * (7 - i);
+	}
+	return whiteDistance - blackDistance;
 }
 
 
