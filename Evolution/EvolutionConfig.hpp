@@ -1,7 +1,7 @@
 #pragma once
 
 namespace EvolutionConfig {
-	constexpr int POPULATION_SIZE = 10;
+	constexpr int POPULATION_SIZE = 20;
 	constexpr int GENERATIONS = 12;
 
 
@@ -10,5 +10,5 @@ namespace EvolutionConfig {
 
 	constexpr float MIN_WEIGHT = -1.0f;
 	constexpr float MAX_WEIGHT = 1.0f;
-	constexpr int TOURNAMENT_ROUNDS = 5;
+	constexpr int TOURNAMENT_ROUNDS = 8;
 }

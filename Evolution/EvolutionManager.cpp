@@ -175,27 +175,24 @@ void EvolutionManager::RunTournament() {
     int totalGamesNeeded = EvolutionConfig::TOURNAMENT_ROUNDS * numBots / 2;
     int gamesScheduled = 0;
 
-    while (gamesScheduled < totalGamesNeeded) {
-        size_t i = gen() % numBots;
-        size_t j;
-        do {
-            j = gen() % numBots;
-        } while (i == j);
+    for (size_t i = 0; i < numBots; ++i) {
+        int rival = i;
+        while (gamesPlayed[i] < EvolutionConfig::TOURNAMENT_ROUNDS) {
+			rival = (rival + 997) % numBots;
+            if (gamesPlayed[rival] >= EvolutionConfig::TOURNAMENT_ROUNDS) {
+                continue;
+            }
 
-        if (gamesPlayed[i] >= EvolutionConfig::TOURNAMENT_ROUNDS ||
-            gamesPlayed[j] >= EvolutionConfig::TOURNAMENT_ROUNDS) {
-            continue;
+            bool iIsWhite = (gamesScheduled % 2 == 0);
+            gamesPlayed[i]++;
+            gamesPlayed[rival]++;
+            gamesScheduled++;
+
+            futures.push_back(std::async(std::launch::async, [this, i, rival, iIsWhite]() {
+                PlaySingleMatch(population[i], population[rival], iIsWhite);
+                }));
         }
-
-        bool iIsWhite = gen() % 2 == 0;
-        gamesPlayed[i]++;
-        gamesPlayed[j]++;
-        gamesScheduled++;
-
-        futures.push_back(std::async(std::launch::async, [this, i, j, iIsWhite]() {
-            PlaySingleMatch(population[i], population[j], iIsWhite);
-            }));
-           
+        
     }
 	std::atomic<int> completedGames = 0;
     printf("Tournament progress: %d/%d games completed (%.1f%%)         \n",
@@ -327,6 +324,7 @@ void EvolutionManager::EvaluateAgainstMonteCarlo(const Bot& bestBot, int generat
 
 	printf("Evaluating against Monte Carlo...\n");
 	printf("Games evaluated: 0/%d\n", gamesPerSide);
+	fflush(stdout);
 
     for (int i = 0; i < gamesPerSide; ++i) {
         MonteCarloPlayer* mcWhite = new MonteCarloPlayer(true, 100);
@@ -345,6 +343,7 @@ void EvolutionManager::EvaluateAgainstMonteCarlo(const Bot& bestBot, int generat
         else if (r2 == -1) bestBotWins++;
         else draws++;
 		printf("Games evaluated: %d/%d\r", i + 1, gamesPerSide);
+        fflush(stdout);
 
         delete mcWhite;
         delete mcBlack;

@@ -10,7 +10,7 @@ float Evaluator::Evaluate(const Board& board) const
 
 int Evaluator::PawnsCountDiff(const Board& board) const
 {
-	return std::popcount(board.whitePieces) - std::popcount(board.blackPieces);
+	return std::popcount(board.whitePieces & (~board.promotedPieces)) - std::popcount(board.blackPieces & (~board.promotedPieces));
 }
 
 int Evaluator::KingsCountDiff(const Board& board) const
