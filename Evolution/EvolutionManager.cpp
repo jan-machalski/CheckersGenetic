@@ -185,7 +185,7 @@ void EvolutionManager::RunTournament() {
     for (size_t i = 0; i < numBots; ++i) {
         int rival = i;
         while (gamesPlayed[i] < EvolutionConfig::TOURNAMENT_ROUNDS) {
-			rival = (rival + 74201) % numBots;
+			rival = (rival + 1) % numBots;
             if (gamesPlayed[rival] >= EvolutionConfig::TOURNAMENT_ROUNDS) {
                 continue;
             }
